@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maharashtra Geo Information Portal</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ============ NAV ============ -->
+  <header class="site-nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 30 30" fill="none">
+          <circle cx="15" cy="15" r="13" stroke="#7FA98D" stroke-width="1.3" />
+          <circle cx="15" cy="15" r="7.5" stroke="#C68A3B" stroke-width="1.3" />
+          <circle cx="15" cy="15" r="2.2" fill="#C68A3B" />
+        </svg>
+        <div class="brand-text">
+          <strong>MahaGeo</strong>
+          <span>Geo Information Portal</span>
+        </div>
+      </div>
+      <div class="nav-controls">
+        <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+              d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41">
+            </path>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+      </div>
+      <nav class="links" id="navLinks">
+        <button data-target="home" class="active">Home</button>
+        <button data-target="map">Interactive Map</button>
+        <button data-target="agriculture">Agriculture</button>
+        <button data-target="weather">Weather</button>
+        <button data-target="disaster">Disasters</button>
+        <button data-target="contact">Contact &amp; Search</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HOME ============ -->
+  <main>
+    <section class="view active" id="view-home">
+
+      <div class="hero">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <div class="eyebrow">Demonstration &middot; Geo-Spatial Initiative</div>
+            <h1>Maharashtra Geo Information Portal</h1>
+            <p class="lead">A single window into Maharashtra's districts — population, cropping patterns, rainfall,
+              rivers and soil, plotted on an interactive map and backed by a fast village-level search.</p>
+            <div class="hero-ctas">
+              <button class="btn btn-primary" data-target="map">Explore the map</button>
+              <button class="btn btn-ghost" data-target="contact">Search a village →</button>
+            </div>
+            <div class="hero-stats">
+              <div class="stat-card"><strong>12</strong><span>Districts mapped</span></div>
+              <div class="stat-card"><strong>6</strong><span>Agro-climatic regions</span></div>
+              <div class="stat-card"><strong>36</strong><span>Total districts</span></div>
+            </div>
+          </div>
+
+          <div class="geo-figure" aria-hidden="true">
+            <svg viewBox="0 0 360 360">
+              <defs>
+                <pattern id="contourPattern" width="360" height="26" patternUnits="userSpaceOnUse">
+                  <path d="M0,13 Q90,0 180,13 T360,13" fill="none" stroke="#2C6259" stroke-width="1" />
+                </pattern>
+                <clipPath id="terrainClip">
+                  <path
+                    d="M70,60 C120,30 190,28 235,48 C275,66 300,60 312,95 C324,132 300,150 305,185 C310,222 288,235 268,268 C250,298 225,320 190,315 C160,310 150,285 118,278 C82,270 55,255 48,215 C42,178 62,165 55,130 C49,98 45,85 70,60 Z" />
+                </clipPath>
+              </defs>
+
+              <path class="terrain-fill" clip-path="url(#terrainClip)" d="M0,0 H360 V360 H0 Z" />
+              <path class="terrain-outline"
+                d="M70,60 C120,30 190,28 235,48 C275,66 300,60 312,95 C324,132 300,150 305,185 C310,222 288,235 268,268 C250,298 225,320 190,315 C160,310 150,285 118,278 C82,270 55,255 48,215 C42,178 62,165 55,130 C49,98 45,85 70,60 Z" />
+              <line class="scan-line" x1="30" y1="0" x2="330" y2="0" />
+
+              <!-- district markers (approx relative positions) -->
+              <g>
+                <circle class="geo-pulse" cx="150" cy="120" r="6" />
+                <circle class="geo-dot-core" cx="150" cy="120" r="3.4" />
+                <text class="geo-label" x="160" y="118">NAGPUR</text>
+
+                <circle class="geo-pulse" cx="120" cy="200" r="6" style="animation-delay:.6s" />
+                <circle class="geo-dot-core" cx="120" cy="200" r="3.4" />
+                <text class="geo-label" x="130" y="198">PUNE</text>
+
+                <circle class="geo-pulse" cx="75" cy="180" r="6" style="animation-delay:1.2s" />
+                <circle class="geo-dot-core" cx="75" cy="180" r="3.4" />
+                <text class="geo-label" x="30" y="200">MUMBAI</text>
+
+                <circle class="geo-dot" cx="150" cy="230" r="2.4" />
+                <circle class="geo-dot" cx="190" cy="150" r="2.4" />
+                <circle class="geo-dot" cx="230" cy="140" r="2.4" />
+                <circle class="geo-dot" cx="110" cy="150" r="2.4" />
+                <circle class="geo-dot" cx="200" cy="230" r="2.4" />
+                <circle class="geo-dot" cx="170" cy="270" r="2.4" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow dark">Districts at a glance</div>
+            <h2>Twelve districts, one data format</h2>
+            <p>Each card reads like a survey record — population, area, dominant crop, rivers, and long-period average
+              rainfall. Select "Locate on map" to jump to that district's marker.</p>
+          </div>
+          <div class="filter-bar">
+            <div class="search-box">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="districtSearchInput" placeholder="Filter districts by name, region, or crop...">
+            </div>
+            <div class="filter-tags" id="regionFilters">
+              <button class="filter-tag active" data-region="all">All Regions</button>
+              <button class="filter-tag" data-region="Konkan">Konkan</button>
+              <button class="filter-tag" data-region="Vidarbha">Vidarbha</button>
+              <button class="filter-tag" data-region="Western Maharashtra">W. Maharashtra</button>
+              <button class="filter-tag" data-region="Marathwada">Marathwada</button>
+              <button class="filter-tag" data-region="North Maharashtra">N. Maharashtra</button>
+              <button class="filter-tag" data-region="Khandesh">Khandesh</button>
+            </div>
+          </div>
+          <div class="district-grid" id="districtGrid"></div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- ============ MAP ============ -->
+    <section class="view" id="view-map">
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow dark">Interactive map · Leaflet.js</div>
+            <h2> A marker for district details</h2>
+            <p>Population, principal crop, average rainfall and exact coordinates load in a pop-up. Use the list on the
+              left on smaller screens or trackpads.</p>
+          </div>
+          <div class="map-layout">
+            <div class="map-sidebar">
+              <div class="sidebar-search">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="mapSidebarSearch" placeholder="Search districts...">
+              </div>
+              <div id="mapSidebar" class="sidebar-list"></div>
+            </div>
+            <div class="map-container">
+              <div class="map-toolbar" id="mapLayerSwitcher">
+                <span class="toolbar-label">Basemap:</span>
+                <button class="map-layer-btn active" data-layer="street" title="Esri Street Map">🗺️ Streets</button>
+                <button class="map-layer-btn" data-layer="satellite" title="Esri Satellite Imagery">🛰️
+                  Satellite</button>
+                <button class="map-layer-btn" data-layer="topo" title="Esri Topographic Map">⛰️ Topo</button>
+                <button class="map-layer-btn" data-layer="dark" title="Esri Dark Gray Canvas">🌙 Dark</button>
+              </div>
+              <div id="leafletMap"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ AGRICULTURE ============ -->
+    <section class="view" id="view-agriculture">
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow dark">Agriculture</div>
+            <h2>Crops, soils and irrigation</h2>
+            <p>Maharashtra's farming pattern shifts with its soil and rainfall — from the cotton belt of Vidarbha to the
+              grape and onion belt of Nashik and the Konkan's rice and cashew coast.</p>
+          </div>
+
+          <div class="subsection-title">Major crops</div>
+          <div class="icon-grid" id="cropGrid"></div>
+
+          <div class="subsection-title">Soil types</div>
+          <div class="icon-grid" id="soilGrid"></div>
+
+          <div class="subsection-title">Irrigation methods</div>
+          <div class="icon-grid" id="irrigationGrid"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ WEATHER ============ -->
+    <section class="view" id="view-weather">
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow dark">Weather</div>
+            <h2>Current conditions snapshot</h2>
+            <p>Sample readings shown below for demonstration. Wire this panel to a live weather API (e.g.
+              OpenWeatherMap) to replace it with real-time data.</p>
+          </div>
+          <div class="weather-note">SAMPLE DATA — not live</div>
+          <div class="weather-grid" id="weatherGrid"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ DISASTER ============ -->
+    <section class="view" id="view-disaster">
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow dark">Disaster awareness</div>
+            <h2>Know the risk, know the response</h2>
+            <p>Maharashtra's geography brings three recurring hazards. Each card outlines what it is and the standard
+              precautions during a warning.</p>
+          </div>
+          <div class="disaster-grid" id="disasterGrid"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="view" id="view-contact">
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow dark">Contact &amp; search</div>
+            <h2>Reach the desk, or search a district</h2>
+            <p>Type a district name — try "Nagpur" — to pull its population, major crop, rainfall and coordinates.</p>
+          </div>
+
+          <div class="contact-grid">
+            <div class="panel">
+              <h3>Get in touch</h3>
+              <p class="sub">This is a static demo form — messages are not sent anywhere.</p>
+              <form id="contactForm">
+                <div class="field">
+                  <label for="cf-name">Name</label>
+                  <input id="cf-name" type="text" required placeholder="Your name">
+                </div>
+                <div class="field">
+                  <label for="cf-email">Email</label>
+                  <input id="cf-email" type="email" required placeholder="you@example.com">
+                </div>
+                <div class="field">
+                  <label for="cf-msg">Message</label>
+                  <textarea id="cf-msg" required placeholder="How can we help?"></textarea>
+                </div>
+                <button type="submit" class="btn btn-dark">Send message</button>
+                <div class="form-msg" id="formMsg">Noted — this demo form doesn't send data anywhere.</div>
+              </form>
+              <div class="contact-meta">
+                <div>Office &middot; <span>MRSAC-style Bhavan, Nagpur, Maharashtra</span></div>
+                <div>Email &middot; <span>info@mahageo-demo.example</span></div>
+                <div>Phone &middot; <span>+91 (712) 000-0000</span></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3>Village / district search</h3>
+              <p class="sub">Matches district-level records in this demo dataset.</p>
+              <div class="search-row">
+                <input id="searchInput" type="text" list="districtList" placeholder="e.g. Nagpur" autocomplete="off">
+                <datalist id="districtList"></datalist>
+                <button class="btn btn-dark" id="searchBtn">Search</button>
+              </div>
+              <div class="search-result" id="searchResult">
+                <p class="result-empty">Type a district name above, e.g. <strong>Nagpur</strong>, <strong>Pune</strong>,
+                  or <strong>Mumbai</strong>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div>
+        <div class="footer-brand">MahaGeo &middot; Maharashtra Geo Information Portal</div>
+        <p>District statistics are approximate and illustrative, compiled for demonstration purposes.</p>
+        <div class="footer-disclaimer">Demonstration project — not an official Government of Maharashtra or MRSAC
+          portal.</div>
+      </div>
+      <div class="mono" style="font-size:0.78rem;">&copy; 2026 MahaGeo Demo</div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
